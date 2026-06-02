@@ -1,67 +1,84 @@
-import os
-from datetime import datetime
+# app.py
 
-CONTACTS_FILE = "data/contacts.csv"
-LOG_FILE = "logs/app.log"
-
-
-def ensure_dirs():
-    os.makedirs("data", exist_ok=True)
-    os.makedirs("logs", exist_ok=True)
-
-
-def write_log(message):
-    with open(LOG_FILE, "a", encoding="utf-8") as f:
-        f.write(f"[{datetime.now()}] {message}\n")
+from database import (
+    init_database,
+    add_contact,
+    get_contacts,
+    add_log,
+    get_logs
+)
 
 
 def show_contacts():
-    if not os.path.exists(CONTACTS_FILE):
-        print("No contacts file found.")
+    contacts = get_contacts()
+
+    if not contacts:
+        print("\nNo contacts found.")
         return
 
-    with open(CONTACTS_FILE, "r", encoding="utf-8") as f:
-        lines = f.readlines()
-
     print("\n=== CONTACTS ===")
-    for i, line in enumerate(lines, start=1):
-        print(f"{i}. {line.strip()}")
+
+    for contact in contacts:
+        cid, name, phone = contact
+        print(f"[{cid}] {name} - {phone}")
 
 
-def show_logs():
-    if not os.path.exists(LOG_FILE):
+def add_new_contact():
+    name = input("Name : ").strip()
+    phone = input("Phone: ").strip()
+
+    add_contact(name, phone)
+    add_log(f"Contact added: {phone}")
+
+    print("\nContact saved successfully.")
+
+
+def show_logs_menu():
+    logs = get_logs()
+
+    print("\n=== LOGS ===")
+
+    if not logs:
         print("No logs available.")
         return
 
-    print("\n=== LOGS ===")
-    with open(LOG_FILE, "r", encoding="utf-8") as f:
-        print(f.read())
+    for log in logs:
+        lid, event, created_at = log
+        print(f"[{lid}] {created_at}")
+        print(f"     {event}")
+        print()
 
 
 def main():
-    ensure_dirs()
+    init_database()
 
     while True:
-        print("\n===== WhatsApp Business Manager =====")
-        print("1. Show Contacts")
-        print("2. Show Logs")
-        print("3. Exit")
+        print("\n==========================")
+        print(" WhatsApp Business Manager")
+        print("==========================")
+        print("1. Add Contact")
+        print("2. Show Contacts")
+        print("3. Show Logs")
+        print("4. Exit")
 
-        choice = input("\nSelect option: ").strip()
+        choice = input("\nSelect Option: ").strip()
 
         if choice == "1":
-            show_contacts()
+            add_new_contact()
 
         elif choice == "2":
-            show_logs()
+            show_contacts()
 
         elif choice == "3":
-            write_log("Application closed")
-            print("Goodbye!")
+            show_logs_menu()
+
+        elif choice == "4":
+            add_log("Application closed")
+            print("\nGoodbye!")
             break
 
         else:
-            print("Invalid option")
+            print("\nInvalid option.")
 
 
 if __name__ == "__main__":
