@@ -1,3 +1,5 @@
+# config.py
+
 import os
 
 # Project Paths
@@ -11,34 +13,26 @@ DB_DIR = os.path.join(BASE_DIR, "database")
 CONTACTS_FILE = os.path.join(DATA_DIR, "contacts.csv")
 DATABASE_FILE = os.path.join(DB_DIR, "messages.db")
 
-SENT_LOG = os.path.join(LOG_DIR, "sent.log")
-FAILED_LOG = os.path.join(LOG_DIR, "failed.log")
+APP_LOG = os.path.join(LOG_DIR, "app.log")
 DELIVERY_LOG = os.path.join(LOG_DIR, "delivery.log")
 
-# WhatsApp Business API Settings
+# WhatsApp Business Platform
 ACCESS_TOKEN = "YOUR_ACCESS_TOKEN"
 PHONE_NUMBER_ID = "YOUR_PHONE_NUMBER_ID"
-BUSINESS_ACCOUNT_ID = "YOUR_BUSINESS_ACCOUNT_ID"
+VERIFY_TOKEN = "YOUR_VERIFY_TOKEN"
 
-# API Endpoint
+# Meta Graph API
 API_VERSION = "v23.0"
 
-API_URL = (
+API_BASE_URL = (
     f"https://graph.facebook.com/"
-    f"{API_VERSION}/"
-    f"{PHONE_NUMBER_ID}/messages"
+    f"{API_VERSION}"
 )
 
 # App Settings
 DEBUG = True
 TIMEOUT = 30
 
-# Message Settings
-DEFAULT_LANGUAGE = "en"
-MAX_RETRY = 3
-
-# Headers
-HEADERS = {
-    "Authorization": f"Bearer {ACCESS_TOKEN}",
-    "Content-Type": "application/json"
-}
+# Ensure directories exist
+for directory in [DATA_DIR, LOG_DIR, DB_DIR]:
+    os.makedirs(directory, exist_ok=True)
